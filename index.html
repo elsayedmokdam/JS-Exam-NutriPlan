@@ -88,7 +88,7 @@
             </nav>
             <div class="p-4 border-t border-gray-200">
                 <div class="flex items-center gap-3 px-3">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-10 h-10 rounded-full object-cover">
+                    <img src="./Images/elsayedmokdam.jpg" alt="User" class="w-10 h-10 rounded-full object-cover">
                     <div class="flex-1">
                         <p class="font-semibold text-gray-900 text-sm">Youssef Amir</p>
                         <p class="text-xs text-gray-500">Premium Member</p>
@@ -602,53 +602,65 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-3">
                             Browse by Category
                         </h3>
-                        <div class="flex gap-3 overflow-x-auto pb-2" id="product-categories">
-                            <button class="product-category-btn px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-emerald-200 transition-all" data-category="Snacks">
+                        <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="product-categories">
+                            <!-- Snacks -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-emerald-100 hover:border-emerald-200 transition-all duration-200" data-category="Snacks">
                                 <i class="fa-solid fa-cookie mr-1.5"></i>
                                 Snacks
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-blue-200 transition-all" data-category="Beverages">
+                            <!-- Beverages -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-blue-50 text-blue-700 border border-blue-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-blue-100 hover:border-blue-200 transition-all duration-200" data-category="Beverages">
                                 <i class="fa-solid fa-glass-water mr-1.5"></i>
                                 Beverages
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium whitespace-nowrap hover:bg-amber-200 transition-all" data-category="Breakfast">
+                            <!-- Breakfast -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-amber-50 text-amber-700 border border-amber-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-amber-100 hover:border-amber-200 transition-all duration-200" data-category="Breakfast">
                                 <i class="fa-solid fa-bread-slice mr-1.5"></i>
                                 Breakfast
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-purple-200 transition-all" data-category="Desserts">
+                            <!-- Desserts -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-purple-50 text-purple-700 border border-purple-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-purple-100 hover:border-purple-200 transition-all duration-200" data-category="Desserts">
                                 <i class="fa-solid fa-ice-cream mr-1.5"></i>
                                 Desserts
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-red-100 text-red-500 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="Breakfast_cereals">
-                                <i class="fa-solid fa-cheese mr-1.5"></i>
+                            <!-- Breakfast Cereals -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-orange-50 text-orange-700 border border-orange-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-orange-100 hover:border-orange-200 transition-all duration-200" data-category="Breakfast_cereals">
+                                <i class="fa-solid fa-bowl-food mr-1.5"></i>
                                 Breakfast Cereals
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-stone-100 text-stone-400 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="Dairy">
+                            <!-- Dairy -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-sky-50 text-sky-700 border border-sky-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-sky-100 hover:border-sky-200 transition-all duration-200" data-category="Dairy">
                                 <i class="fa-solid fa-cheese mr-1.5"></i>
                                 Dairy
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-red-100 text-red-500 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="fruits">
+                            <!-- Fruits -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-rose-50 text-rose-700 border border-rose-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-rose-100 hover:border-rose-200 transition-all duration-200" data-category="fruits">
                                 <i class="fa-solid fa-apple-whole mr-1.5"></i>
                                 Fruits
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-red-100 text-red-500 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="vegetables">
+                            <!-- Vegetables -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-lime-50 text-lime-700 border border-lime-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-lime-100 hover:border-lime-200 transition-all duration-200" data-category="vegetables">
                                 <i class="fa-solid fa-carrot mr-1.5"></i>
                                 Vegetables
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-red-100 text-red-500 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="breads">
+                            <!-- Breads -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-yellow-50 text-yellow-700 border border-yellow-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-yellow-100 hover:border-yellow-200 transition-all duration-200" data-category="breads">
                                 <i class="fa-solid fa-bread-slice mr-1.5"></i>
                                 Breads
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-red-100 text-red-500 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="meats">
+                            <!-- Meats -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-red-50 text-red-700 border border-red-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-red-100 hover:border-red-200 transition-all duration-200" data-category="meats">
                                 <i class="fa-solid fa-drumstick-bite mr-1.5"></i>
                                 Meats
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-red-100 text-red-500 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="frozen_foods">
+                            <!-- Frozen Foods -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-cyan-50 text-cyan-700 border border-cyan-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-cyan-100 hover:border-cyan-200 transition-all duration-200" data-category="frozen_foods">
                                 <i class="fa-solid fa-snowflake mr-1.5"></i>
                                 Frozen Foods
                             </button>
-                            <button class="product-category-btn px-4 py-2 bg-red-100 text-red-500 rounded-lg text-sm font-medium whitespace-nowrap hover:bg-rose-200 transition-all" data-category="Sauces">
-                                <i class="fa-solidfa-jar mr-1.5"></i>
+                            <!-- Sauces -->
+                            <button class="product-category-btn shrink-0 px-4 py-2.5 bg-pink-50 text-pink-700 border border-pink-100 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-pink-100 hover:border-pink-200 transition-all duration-200" data-category="Sauces">
+                                <i class="fa-solid fa-jar mr-1.5"></i>
                                 Sauces
                             </button>
                         </div>

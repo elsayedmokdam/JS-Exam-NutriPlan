@@ -57,6 +57,7 @@ function getDate() {
     year,
   };
 }
+
 let { month, day, currentDayName, year } = getDate();
 if (!localStorage.getItem("currentDay")) {
   localStorage.setItem("currentDay", day);
@@ -219,10 +220,10 @@ function displayAllCategories(data) {
   categoriesGrid.innerHTML = categoriesBox;
 }
 
-function getSearchMeals() {
+function getSearchMeals(limit = 25) {
   loadingScreen.classList.remove("hidden");
   fetch(
-    "https://nutriplan-api.vercel.app/api/meals/search?q=chicken&page=1&limit=25",
+    `https://nutriplan-api.vercel.app/api/meals/search?q=chicken&page=1&limit=${limit}`,
   )
     .then((res) => res.json())
     .then((data) => {
@@ -294,7 +295,7 @@ recipesGrid.addEventListener("click", (e) => {
   }
 });
 
-function filterMeals(meal) {
+function filterMeals(meal, limit = 25) {
   // console.log(loader.classList.contains('hidden'));
   loader.classList.remove("hidden");
   // console.log(loader.classList.contains('hidden'));
@@ -303,7 +304,7 @@ function filterMeals(meal) {
     category: meal.category,
     area: meal.area,
     page: 1,
-    limit: 25,
+    limit: limit,
   });
 
   fetch(`https://nutriplan-api.vercel.app/api/meals/filter?${params}`)
@@ -392,7 +393,7 @@ function getMealDetails(mealId) {
   fetch(`https://nutriplan-api.vercel.app/api/meals/${mealId}`)
     .then((res) => res.json())
     .then(({ result }) => {
-      console.log(result);
+      // console.log(result);
       analizeMealNutrition(result);
     });
 }
@@ -436,7 +437,7 @@ function getIngredientsList(ingredientsObj) {
             <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-emerald-50 transition-colors">
                 <input type="checkbox" class="ingredient-checkbox w-5 h-5 text-emerald-600 rounded border-gray-300">
                 <span class="text-gray-700">
-                    <span class="font-medium text-gray-900">${ingredient.parsed.quantity} ${ingredient.parsed.unit}</span>
+                    <span class="font-medium text-gray-900">${ingredient.parsed.quantity.toFixed(2)} ${ingredient.parsed.unit}</span>
                     ${ingredient.matched.description}
                 </span>
             </div>
@@ -476,12 +477,12 @@ function hideMealDetails(sectionId) {
   document.getElementById(sectionId).classList.add("hidden");
 }
 
-function searchProducts(query) {
+function searchProducts(query, limit = 24) {
   productsCount.innerHTML = `Showing results for "${productSearchInput.value}"....`;
   loader.classList.remove("hidden");
   query = query.trim();
   fetch(
-    `https://nutriplan-api.vercel.app/api/products/search?q=${query}&page=1&limit=24`,
+    `https://nutriplan-api.vercel.app/api/products/search?q=${query}&page=1&limit=${limit}`,
   )
     .then((res) => res.json())
     .then((data) => {
@@ -611,11 +612,11 @@ function displayProductByBarcode(data) {
   productsGrid.innerHTML = productsBox;
 }
 
-function filterByNutriScore(nutriScore) {
+function filterByNutriScore(nutriScore, limit = 24) {
   productsCount.innerHTML = `Filtering by Nutri-Score ${nutriScore}`;
   loader.classList.remove("hidden");
   fetch(
-    `https://nutriplan-api.vercel.app/api/products/search?q=${productSearchInput.value}&page=1&limit=24`,
+    `https://nutriplan-api.vercel.app/api/products/search?q=${productSearchInput.value}&page=1&limit=${limit}`,
   )
     .then((res) => res.json())
     .then((data) => {
@@ -639,11 +640,11 @@ function filterByNutriScore(nutriScore) {
     });
 }
 
-function filterByCategory(categry) {
+function filterByCategory(categry, limit = 24) {
   productsCount.innerHTML = `Filtering by Category ${categry}`;
   loader.classList.remove("hidden");
   fetch(
-    `https://nutriplan-api.vercel.app/api/products/search?q=${categry}&page=1&limit=24`,
+    `https://nutriplan-api.vercel.app/api/products/search?q=${categry}&page=1&limit=${limit}`,
   )
     .then((res) => res.json())
     .then((data) => {
@@ -690,7 +691,7 @@ productsGrid.addEventListener("click", (e) => {
   const barcode = e.target
     .closest(".product-card")
     .getAttribute("data-barcode");
-  console.log(barcode);
+  // console.log(barcode);
   globalBarcode = barcode;
   changeTheContentOfTheOverlay(barcode);
 });
@@ -715,7 +716,7 @@ function changeTheContentOfTheOverlay(barcode) {
 }
 
 function displayOverlayContent(data) {
-  console.log(data);
+  // console.log(data);
   modelContent.innerHTML = `
         <!-- Header -->
         <div class="flex items-start gap-4 p-4 border-b">
@@ -814,18 +815,14 @@ function updateClock() {
 }
 
 setInterval(updateClock, 1000);
-function checkDay() {
-  let savedDay = localStorage.getItem("currentDay");
 
-  if (savedDay != day) {
-    calories = 0;
-    protein = 0;
-    carbs = 0;
-    fats = 0;
-    localStorage.setItem("currentDay", day);
-  }
-}
-checkDay();
+// -----------------------------------------------------------------------------------------------------------
+let calories = Number(localStorage.getItem("calories")) || 0;
+let protein = Number(localStorage.getItem("protein")) || 0;
+let carbs = Number(localStorage.getItem("carbs")) || 0;
+let fats = Number(localStorage.getItem("fats")) || 0;
+
+loggedItems = JSON.parse(localStorage.getItem("loggedItems")) || [];
 
 function updateLocalStorage() {
   localStorage.setItem("calories", calories);
@@ -834,19 +831,30 @@ function updateLocalStorage() {
   localStorage.setItem("fats", fats);
 }
 
-let calories = Number(localStorage.getItem("calories")) || 0;
-let protein = Number(localStorage.getItem("protein")) || 0;
-let carbs = Number(localStorage.getItem("carbs")) || 0;
-let fats = Number(localStorage.getItem("fats")) || 0;
+function checkDay() {
+  const savedDay = localStorage.getItem("currentDay");
+  let day = new Date().getDate();
+  // console.log(day !== parseInt(savedDay));
 
-updateLocalStorage();
+  if (parseInt(savedDay) !== day) {
+    calories = 0;
+    protein = 0;
+    carbs = 0;
+    fats = 0;
+
+    loggedItems = [];
+
+    localStorage.setItem("currentDay", day);
+
+    updateLocalStorage();
+
+    localStorage.setItem("loggedItems", JSON.stringify(loggedItems));
+  }
+}
+
+checkDay();
 
 function displayTodaysNutritions() {
-  console.log("Displaying todays nutritions");
-
-  updateLocalStorage();
-  checkDay();
-
   const calories = Number(localStorage.getItem("calories")) || 0;
   const caloriesPercent = (calories / 2000) * 100;
 
@@ -868,7 +876,7 @@ function displayTodaysNutritions() {
                         <span class="text-sm text-gray-500">${calories.toFixed(2) <= 0 ? 0 : calories.toFixed(2)} kcal</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="${caloriesPercent > 100 ? "bg-red-500" : "bg-emerald-500"} h-2.5 rounded-full" style="width: ${ caloriesPercent > 100 ? 100 : caloriesPercent <= 0 ? 0 : caloriesPercent}%"></div>
+                        <div class="${caloriesPercent > 100 ? "bg-red-500" : "bg-emerald-500"} h-2.5 rounded-full" style="width: ${caloriesPercent > 100 ? 100 : caloriesPercent <= 0 ? 0 : caloriesPercent}%"></div>
                     </div>
                 </div>
                 <!-- Protein Progress -->
@@ -909,17 +917,18 @@ function displayTodaysNutritions() {
 displayTodaysNutritions();
 
 function calcNutritions(nutrients) {
-  calories += nutrients.calories;
-  protein += nutrients.protein;
-  carbs += nutrients.carbs;
-  fats += nutrients.fat;
+  calories += Number(nutrients.calories) || 0;
+  protein += Number(nutrients.protein) || 0;
+  carbs += Number(nutrients.carbs) || 0;
+  fats += Number(nutrients.fat) || 0;
+
   updateLocalStorage();
   displayTodaysNutritions();
 }
 
 document.addEventListener("click", (e) => {
   if (e.target.closest("#log-meal-btn")) {
-    console.log("Logging the meal with barcode", globalBarcode);
+    // console.log("Logging the meal with barcode", globalBarcode);
     getProductByBarcode(globalBarcode);
     notyf.open({
       type: "success",
@@ -933,7 +942,7 @@ function displayLoggedItems() {
   let loggedItemsBox = "";
   // console.log("Displaying logged items");
   // console.log(loggedItems);
-  if(loggedItems.length === 0) {
+  if (loggedItems.length === 0) {
     loggedItemsBox += `
         <div class="text-center py-8 text-gray-500">
             <i class="fa-solid fa-utensils text-4xl mb-3 text-gray-300"></i>
@@ -943,8 +952,8 @@ function displayLoggedItems() {
             </p>
         </div>
         `;
-        loggedItemsList.innerHTML = loggedItemsBox;
-        return;
+    loggedItemsList.innerHTML = loggedItemsBox;
+    return;
   }
   for (let i = 0; i < loggedItems.length; i++) {
     // Transform loggedAt to time format
@@ -1000,15 +1009,21 @@ function displayLoggedItems() {
 
 loggedItemsList.addEventListener("click", (e) => {
   // console.log(e.target.closest(".delete-btn").getAttribute("data-index"));
+  const index = Number(
+    e.target.closest(".delete-btn").getAttribute("data-index"),
+  );
   if (e.target.closest(".delete-btn")) {
-    const index = e.target.closest(".delete-btn").getAttribute("data-index");
     calories -= loggedItems[index].nutrients.calories;
     protein -= loggedItems[index].nutrients.protein;
     carbs -= loggedItems[index].nutrients.carbs;
     fats -= loggedItems[index].nutrients.fat;
-    updateLocalStorage();
+
     loggedItems.splice(index, 1);
+
+    updateLocalStorage();
+
     localStorage.setItem("loggedItems", JSON.stringify(loggedItems));
+
     displayLoggedItems();
     displayTodaysNutritions();
     notyf.open({
@@ -1027,61 +1042,89 @@ if (loggedItems.length > 0) {
   clearFoodlog.classList.remove("hidden");
 }
 
-clearFoodlog?.addEventListener("click", (_) => {
+clearFoodlog?.addEventListener("click", () => {
   loggedItems = [];
+
   calories = 0;
   protein = 0;
   carbs = 0;
   fats = 0;
+
   updateLocalStorage();
+
   localStorage.setItem("loggedItems", JSON.stringify(loggedItems));
+
   displayLoggedItems();
   displayTodaysNutritions();
+
   notyf.open({
     type: "success",
     message: "Food log cleared successfully",
   });
+
   clearFoodlog.classList.add("hidden");
 });
 
-function analizeMealNutrition(meal) {
-    fetch(`https://nutriplan-api.vercel.app/api/nutrition/analyze`,{
-        method: 'POST',
-        headers:{
-            'Content-Type': 'application/json',
-            'x-api-key': 'q0SSlJpe8ND5mYD4QfgMqDpzz2CFqLCgPdBiI7aW',
+// ----------------------------------------------------------------------------------------------
+async function analizeMealNutrition(meal) {
+  try {
+    // console.log("Current meal:", meal);
+
+    const ingredients = meal.ingredients.map(
+      (ing) => `${ing.measure} ${ing.ingredient}`,
+    );
+
+    // console.log("Ingredients sent to API:", ingredients);
+
+    const response = await fetch(
+      "https://nutriplan-api.vercel.app/api/nutrition/analyze",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "q0SSlJpe8ND5mYD4QfgMqDpzz2CFqLCgPdBiI7aW",
         },
         body: JSON.stringify({
-            recipeName: meal.name,
-            ingredients: meal.ingredients.map(ing => `${ing.measure} ${ing.ingredient}`),
-        })
-    }).then(res => res.json())
-    .then(data => {
-        loadingScreen.classList.add("hidden");
-        console.log(loadingScreen.classList.contains('hidden'));
-        console.log(data);
-        displayMealDetails(data, meal);
-        // document.getElementById('hero-calories').innerText = `${data.totalCalories} cal/serving`;
-    })
+          recipeName: meal.name,
+          ingredients,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // console.log("API response:", data);
+
+    displayMealDetails(data, meal);
+
+    loadingScreen.classList.add("hidden");
+  } catch (error) {
+    console.error("Nutrition analysis failed:", error);
+
+    loadingScreen.classList.add("hidden");
+  }
 }
 
 let recipeInfo = {};
 function displayMealDetails(data, meal) {
-  // console.log(data.data);
+  // console.log(data);
   // console.log(meal);
   // console.log('Displaying meal details');
   // console.log(data.ingredients);
-  showSectionOfMealRecipes("meal-details");
   recipeInfo = {
     name: meal.name,
-    img : meal.thumbnail,
+    img: meal.thumbnail,
     calories: data.data.totals.calories,
     protein: data.data.totals.protein,
     carbs: data.data.totals.carbs,
     fats: data.data.totals.fat,
-  }
-  console.log(recipeInfo);
-  mealDetailsSection.innerHTML =`
+  };
+  showSectionOfMealRecipes("meal-details");
+  mealDetailsSection.innerHTML = `
                     <div class="max-w-7xl mx-auto">
                         <!-- Back Button -->
                         <button id="back-to-meals-btn" class="flex items-center gap-2 text-gray-600 hover:text-emerald-600 font-medium mb-6 transition-colors">
@@ -1101,11 +1144,15 @@ function displayMealDetails(data, meal) {
                                         <span class="px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-full">
                                             ${meal.area}
                                         </span>
-                                        ${meal.tags.map(tag => `
+                                        ${meal.tags
+                                          .map(
+                                            (tag) => `
                                             <span class="px-3 py-1 bg-purple-500 text-white text-sm font-semibold rounded-full">
                                                 ${tag}
                                             </span>
-                                        `).join('')}
+                                        `,
+                                          )
+                                          .join("")}
                                     </div>
                                     <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">
                                         ${meal.name}
@@ -1202,7 +1249,7 @@ function displayMealDetails(data, meal) {
                                                 <span class="font-bold text-gray-900">${data.data.perServing.protein}g</span>
                                             </div>
                                             <div class="w-full bg-gray-100 rounded-full h-2">
-                                                <div class="bg-emerald-500 h-2 rounded-full" style="width: ${data.data.perServing.protein / data.data.totals.protein * 100}%"></div>
+                                                <div class="bg-emerald-500 h-2 rounded-full" style="width: ${(data.data.perServing.protein / data.data.totals.protein) * 100}%"></div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <div class="flex items-center gap-2">
@@ -1212,7 +1259,7 @@ function displayMealDetails(data, meal) {
                                                 <span class="font-bold text-gray-900">${data.data.perServing.carbs}g</span>
                                             </div>
                                             <div class="w-full bg-gray-100 rounded-full h-2">
-                                                <div class="bg-blue-500 h-2 rounded-full" style="width: ${data.data.perServing.carbs / data.data.totals.carbs * 100}%"></div>
+                                                <div class="bg-blue-500 h-2 rounded-full" style="width: ${(data.data.perServing.carbs / data.data.totals.carbs) * 100}%"></div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <div class="flex items-center gap-2">
@@ -1222,7 +1269,7 @@ function displayMealDetails(data, meal) {
                                                 <span class="font-bold text-gray-900">${data.data.perServing.fat}g</span>
                                             </div>
                                             <div class="w-full bg-gray-100 rounded-full h-2">
-                                                <div class="bg-purple-500 h-2 rounded-full" style="width: ${data.data.perServing.fat / data.data.totals.fat * 100}%"></div>
+                                                <div class="bg-purple-500 h-2 rounded-full" style="width: ${(data.data.perServing.fat / data.data.totals.fat) * 100}%"></div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <div class="flex items-center gap-2">
@@ -1232,7 +1279,7 @@ function displayMealDetails(data, meal) {
                                                 <span class="font-bold text-gray-900">${data.data.perServing.fiber}g</span>
                                             </div>
                                             <div class="w-full bg-gray-100 rounded-full h-2">
-                                                <div class="bg-orange-500 h-2 rounded-full" style="width: ${data.data.perServing.fiber / data.data.totals.fiber * 100}%"></div>
+                                                <div class="bg-orange-500 h-2 rounded-full" style="width: ${(data.data.perServing.fiber / data.data.totals.fiber) * 100}%"></div>
                                             </div>
                                             <div class="flex items-center justify-between">
                                                 <div class="flex items-center gap-2">
@@ -1242,7 +1289,7 @@ function displayMealDetails(data, meal) {
                                                 <span class="font-bold text-gray-900">${data.data.perServing.sugar}g</span>
                                             </div>
                                             <div class="w-full bg-gray-100 rounded-full h-2">
-                                                <div class="bg-pink-500 h-2 rounded-full" style="width: ${data.data.perServing.sugar / data.data.totals.sugar * 100}%"></div>
+                                                <div class="bg-pink-500 h-2 rounded-full" style="width: ${(data.data.perServing.sugar / data.data.totals.sugar) * 100}%"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -1250,21 +1297,22 @@ function displayMealDetails(data, meal) {
                             </div>
                         </div>
                     </div>
-  `
+  `;
 }
 
-mealDetailsSection.addEventListener('click', e => {
-  const btn = e.target.closest('#log-recipe-btn');
+mealDetailsSection.addEventListener("click", (e) => {
+  const btn = e.target.closest("#log-recipe-btn");
   if (!btn) return;
 
   logMeal();
   notyf.open({
     type: "success",
     message: "Meal logged successfully",
-  })
+  });
 });
 
 function logMeal() {
+  // console.log(recipeInfo);
   const loggedMeal = {
     name: recipeInfo.name,
     image: recipeInfo.img,
